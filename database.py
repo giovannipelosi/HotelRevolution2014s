@@ -1,5 +1,5 @@
-import sqlite3
 import datetime
+import sqlite3
 from config import DATABASE_PATH
 
 ## Dictionary
@@ -54,4 +54,80 @@ def checkOut_price(rooms):
                          "id_guest" : r[1],
                          "price" : price})
     return roomsInfo
+###
+###
+### 
+#### NEW FUNCTIONS
 
+def columnNames(database,table):
+    """given database (i.e. the name of a database) and table (i.e. the name of a table contained inside the databese) the function returns a list with the column's names of the table"""
+    columnNames = list()
+    conn = sqlite3.connect(database)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM "+ table + " ")
+    for i in cursor.description:
+        columnNames.append(i[0])
+    return columnNames
+
+def addToTable (database,table):
+    """given database (i.e. the name of a database) and table (i.e. the name of a table contained inside the databese) the function: 1) ask the data to put inside the table 2) put the data inside. the function DO NOT return anything"""
+    conn = sqlite3.connect(database)
+    data = list()
+    num = columnNames(database,table)
+    for i in range(len(num)):
+        print "input the data for the value: ",num[i]
+        data.append(raw_input("\n"))
+
+    
+
+    colName = '('
+    for i in range(len(num)):
+        if i != len(num)-1:
+            colName = colName+"'"+num[i]+"'"+","
+        else:
+            colName = colName +"'"+num[i]+"'"
+    colName = colName +')'
+
+    quere = "("
+    for i in range(len(num)):
+        if i != len(num)-1:
+            quere = quere + "?,"
+        else:
+            quere = quere + "?)"
+
+    with conn:
+        cur= conn.cursor()
+        cur.execute("INSERT INTO "+ table +" "+ colName  +"  VALUES"+ quere+"",data)
+
+
+def addToTableModified (database,table,info):
+    """given a database, a table, and a information to add, th function add the information"""
+    con = sqlite3.connect(database)
+    data = list()
+    num = columnNames(database,table)
+    colName = '('
+    for i in range(len(num)):
+        if i != len(num)-1:
+            colName = colName+"'"+num[i]+"'"+","
+        else:
+            colName = colName +"'"+num[i]+"'"
+    colName = colName +')'
+    quere = "("
+    for i in range(len(num)):
+        if i != len(num)-1:
+            quere = quere +"?,"
+        else:
+            quere = quere +"?)"
+    with con:
+       cur = con.cursor()
+       cur.execute("INSERT INTO "+ table +" "+ colName +" VALUES"+ quere+"",info)
+
+
+def modifyData (database,table,identification,idColName,info):
+    con = sqlite3.connect(database)
+    with con:
+        cur= con.cursor()
+        cur.execute("DELETE FROM "+ table +"  WHERE "+ idColName +" =?",identification)
+    addToTableModified (database,table,info)
+info = [3,"hh","sf","w45w","899","890","8797","798"]
+modifyData("hotel.db","guests","3","id_guest",info)
