@@ -101,7 +101,7 @@ def addToTable (database,table):
 
 
 def addToTableModified (database,table,info):
-    """given a database, a table, and a information to add, th function add the information"""
+    """given a database, a table, and a information to add, the function add the information"""
     con = sqlite3.connect(database)
     data = list()
     num = columnNames(database,table)
