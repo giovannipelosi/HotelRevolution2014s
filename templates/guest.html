@@ -1,0 +1,134 @@
+<html>
+	<head>
+		<title>HR - Guests</title>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+		<link rel="stylesheet" href="stylesheet.css"/>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+		<script type="text/javascript">
+			function able() {
+				var inputs = document.getElementsByClassName('myform');
+				for(var i = 0; i < inputs.length; i++) {
+					inputs[i].disabled = false;
+				}
+			};
+		</script>
+		<script type="text/javascript">
+			function autoFillForm(element) {
+				var inputs = document.getElementsByClassName('myform');
+				var fields = element.getElementsByTagName("td");
+				for(var i = 0; i < inputs.length; i++) {
+					inputs[i].value = fields[i].innerHTML;
+				}
+				document.getElementById("btn-modify").disabled = false;	
+				document.getElementById("btn-save").disabled = false;	
+			};			
+		</script>
+		<script type="text/javascript">
+			function changeGuestForm(element) {
+				var x = element;
+				var y = document.getElementById("guestForm");	
+				y.placeholder = "Guest's " + x.options[x.selectedIndex].text;
+				y.name = x.options[x.selectedIndex].value;
+			}
+		</script>
+	</head>
+	<body class="c4">
+		<div class="top c3">
+			<div class="row">
+				<div class="col-md-6">
+					<form class="form-inline" role="form" method="get">
+						<select class="form-control" onchange="changeGuestForm(this);">
+							  <option value="name">First Name</option>
+							  <option value="surname">Family Name</option>
+							  <option value="id_guest">ID</option>
+							  <option value="passport">Passport N°</option>
+							  <option value="email">e-mail</option>
+						</select>
+						<input  id="guestForm" name="name" type="text" class="form-control" placeholder="Guest's First name">
+						<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search</button>
+					</form>
+				</div>
+				
+				<div class="col-md-5">	
+					<h4 class="{% if error %} msg-fail {% else %} msg-ok {% endif %} text-right">{{ msg }}</h4>
+				</div>
+				
+				<div class="col-md-1">
+					<a href="/main">
+						<button class="btn btn-default"><span class="glyphicon glyphicon-home"></span> Home</button>
+					</a>
+				</div>
+			</div>
+		</div>
+			
+		<div class="row">
+			<form class="form-horizontal" role="form" method="post" action="guests">
+				<div class="col-md-6">
+					<div class="div-std c2">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>First name</th>
+									<th class="hidden">phone</th>
+									<th class="hidden">passport</th>
+									<th>Family name</th>
+									<th>email</th>
+									<th class="hidden">address</th>	
+									<th class="hidden">info</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for g in guest %}
+								<tr onclick="autoFillForm(this);">
+									<td>{{ g[1] }}</td>
+									<td class="hidden">{{ g[5] }}</td>
+									<td class="hidden">{{ g[4] }}</td>
+									<td>{{ g[2] }}</td>
+									<td>{{ g[3] }}</td>
+									<td class="hidden">{{ g[6] }}</td>
+									<td class="hidden">{{ g[7] }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+				<div class="col-md-6">
+					<div class="div-std c1">
+						<div class="row">
+							<div class="col-md-6" id="fieldList">
+								<label>First Name</label>
+								<input name="name" type="text" class="form-control myform" placeholder="First Name *" disabled>
+								<label>Phone Number</label>
+								<input name="phone" type="text" class="form-control myform" placeholder="Phone number" disabled>
+								<label>Passport ID</label>
+								<input name="passport" type="text" class="form-control myform" placeholder="Passport ID" disabled>
+							</div>
+							<div class="col-md-6">
+								<label>Family Name</label>
+								<input name="surname" type="text" class="form-control myform" placeholder="Family Name *" disabled>
+								<label>e-mail address</label>
+								<input name="email" type="email" class="form-control myform" placeholder="email address" disabled>
+								<label>Home Address</label>
+								<input name="address" type="text" class="form-control myform" placeholder="Address" disabled>
+							</div>
+							<div class="col-md-12">
+								<label>Other informations</label>	
+								<textarea name="info" class="form-control myform" rows="2" placeholder="other informations..." disabled></textarea>
+							</div>
+							<div class="col-md-6">
+								<button id="btn-modify"class="btn btn-warning btn-lg btn-block" type="button" onclick="able();" disabled>
+									<span class="glyphicon glyphicon-pencil"></span>Modify
+								</button>
+							</div>
+							<div class="col-md-6">
+								<button id="btn-save" class="btn btn-success btn-lg btn-block" type="submit" disabled><span class="glyphicon glyphicon-save"></span> Save</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</body>
+</html>
